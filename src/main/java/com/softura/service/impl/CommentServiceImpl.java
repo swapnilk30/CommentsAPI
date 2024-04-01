@@ -1,5 +1,6 @@
 package com.softura.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -68,10 +69,14 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public List<Comment> searchByUser(String user) {
-		
-		
 		List<Comment> list = commentRepository.findByUserName(user);
 		return list;
+	}
+
+	@Override
+	public List<Comment> searchByDate(LocalDate date) {
+		List<Comment> findByDateOfComment = commentRepository.findByDateOfComment(date);
+		return findByDateOfComment;
 	}
 
 }
