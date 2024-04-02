@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.softura.entity.Comment;
+import com.softura.exception.BadApiRequestException;
 import com.softura.helper.ApiResponseMessage;
 import com.softura.repository.CommentRepository;
 import com.softura.service.CommentService;
@@ -71,7 +72,7 @@ public class CommentController {
 	
 	// search by userNAme
 	// GET http://localhost:8080/api/v2/comments/search?username=user2
-	@GetMapping("/search")
+	@GetMapping("/search/username")
 	public ResponseEntity<List<Comment>> getCommentsByUserName(@RequestParam("username") String userName){
 		
 		List<Comment> searchByUser = commentService.searchByUser(userName);
@@ -87,5 +88,20 @@ public class CommentController {
 		
 		return ResponseEntity.ok(searchByDate);
 	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<Comment>> getCommentsByUserNameOrDate(
+			@RequestParam(value = "username", required = false) String userName,
+			@RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+		if(userName != null) {
+			return ResponseEntity.ok(commentService.searchByUser(userName));
+		}else if(date != null) {
+			return ResponseEntity.ok(commentService.searchByDate(date));
+			
+		}else {
+			throw new BadApiRequestException("provide valid  USername or Date !!");
+		}
+	}
+	
 	
 }
